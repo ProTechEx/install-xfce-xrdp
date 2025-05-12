@@ -27,11 +27,11 @@ EOF
 
 chmod +x /root/.xsession
 
-echo "== [6/9] Setting Turkish Q layout system-wide =="
+echo "== [6/9] Setting Turkish Q layout and locale system-wide =="
 localectl set-keymap trq
 localectl set-x11-keymap tr pc105 q
-update-locale LANG=tr_TR.UTF-8
 locale-gen tr_TR.UTF-8
+update-locale LANG=tr_TR.UTF-8
 
 echo "== [7/9] Overriding xrdp startwm.sh for GNOME + Turkish layout =="
 cat <<EOF > /etc/xrdp/startwm.sh
