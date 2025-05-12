@@ -2,19 +2,19 @@
 
 set -e
 
-echo "== [1/8] Updating system =="
+echo "== [1/9] Updating system =="
 apt update && apt upgrade -y
 
-echo "== [2/8] Installing Ubuntu GNOME Desktop =="
+echo "== [2/9] Installing Ubuntu GNOME Desktop =="
 DEBIAN_FRONTEND=noninteractive apt install -y ubuntu-gnome-desktop gnome-session gdm3
 
-echo "== [3/8] Installing xRDP =="
+echo "== [3/9] Installing xRDP =="
 apt install -y xrdp xorgxrdp dbus-x11 x11-utils
 
-echo "== [4/8] Allowing root login in xRDP =="
+echo "== [4/9] Allowing root login in xRDP =="
 sed -i 's/^AllowRootLogin=.*/AllowRootLogin=true/' /etc/xrdp/sesman.ini
 
-echo "== [5/8] Setting up root's GNOME session =="
+echo "== [5/9] Creating root GNOME session with Turkish layout =="
 cat <<EOF > /root/.xsession
 export GNOME_SHELL_SESSION_MODE=ubuntu
 export XDG_CURRENT_DESKTOP=ubuntu:GNOME
@@ -27,13 +27,13 @@ EOF
 
 chmod +x /root/.xsession
 
-echo "== [6/8] Setting Turkish Q keyboard layout system-wide =="
+echo "== [6/9] Setting Turkish Q layout system-wide =="
 localectl set-keymap trq
 localectl set-x11-keymap tr pc105 q
 update-locale LANG=tr_TR.UTF-8
 locale-gen tr_TR.UTF-8
 
-echo "== [7/8] Updating xrdp startup script to load Turkish layout and GNOME session =="
+echo "== [7/9] Overriding xrdp startwm.sh for GNOME + Turkish layout =="
 cat <<EOF > /etc/xrdp/startwm.sh
 #!/bin/sh
 export LANG=tr_TR.UTF-8
@@ -44,11 +44,21 @@ EOF
 
 chmod +x /etc/xrdp/startwm.sh
 
-echo "== [8/8] Restarting services and enabling graphical target =="
+echo "== [8/9] Opening RDP port 3389 in firewall if UFW is active =="
+if ufw status | grep -q active; then
+  ufw allow 3389/tcp
+  echo "✓ UFW is active — port 3389 opened."
+else
+  echo "⚠ UFW is not active — skipping firewall rule."
+fi
+
+echo "== [9/9] Restarting services and enabling graphical target =="
 systemctl set-default graphical.target
 systemctl restart xrdp xrdp-sesman
 
+IP=$(hostname -I | awk '{print $1}')
 echo
-echo "✅ All done. System will reboot in 10 seconds..."
+echo "✅ Setup complete. You can now connect via RDP to: $IP"
+echo "🔁 Rebooting in 10 seconds..."
 sleep 10
 reboot
