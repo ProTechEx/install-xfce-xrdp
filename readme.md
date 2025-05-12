@@ -26,7 +26,7 @@ This script installs a lightweight Xfce desktop environment and configures xRDP 
 
 1. Download the script:
    ```bash
-   wget [https://yourdomain.com/install-xfce-xrdp.sh](https://raw.githubusercontent.com/ProTechEx/install-xfce-xrdp/refs/heads/main/install-xfce-xrdp.sh) && chmod +x install-xfce-xrdp.sh && ./install-xfce-xrdp.sh
+   wget ttps://raw.githubusercontent.com/ProTechEx/install-xfce-xrdp/refs/heads/main/install-xfce-xrdp.sh && chmod +x install-xfce-xrdp.sh && ./install-xfce-xrdp.sh
    ```
 
 
